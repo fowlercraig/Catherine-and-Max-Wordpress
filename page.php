@@ -47,7 +47,7 @@
 <hr class="divider-vertical down">
 <div class="fs-row">
 	<div class="fs-cell fs-lg-11 fs-md-6 fs-sm-3 fs-centered text-center">
-		<h3><?php the_field('main_section'); ?></h3>
+		<h3><?php the_field('registry_section'); ?></h3>
 		<hr class="divider-vertical down">
 		<div class="fs-cell fs-lg-11 fs-md-6 fs-sm-3 fs-centered text-center">
 			<div class="register-wrapper">
