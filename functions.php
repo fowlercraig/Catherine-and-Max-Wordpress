@@ -14,6 +14,9 @@ include_once ('lib/roots-rewrites-master/roots-rewrites.php' );
 include_once ('lib/opengraph/opengraph.php' );
 include_once ('lib/gravitylimits.php' );
 
+// HTML Compression
+include_once ('lib/wp-html-compression/wp-html-compression.php' );
+
 // Includes
 
 function my_acf_settings_path( $path ) {
@@ -32,7 +35,7 @@ add_filter('acf/settings/dir', 'my_acf_settings_dir');
 add_theme_support('soil-relative-urls');
 add_theme_support('soil-nice-search');
 add_theme_support('soil-clean-up');
-add_theme_support('soil-google-analytics', 'UA-XXXXX-Y');
+//add_theme_support('soil-google-analytics', 'UA-XXXXX-Y');
 add_theme_support('soil-disable-trackbacks');
 add_theme_support('soil-disable-asset-versioning');
 add_theme_support('soil-nav-walker');

@@ -86,7 +86,7 @@
 		if (!data.always) {
 			// Unbind events, clear timers, similiar to .one()
 
-			data.$el[Plugin.namespaceClean]("destroy"); // clean up old data?
+			data.$el[Plugin.namespace]("destroy"); // clean up old data?
 		}
 
 		// fire callback
@@ -181,8 +181,6 @@
 	 * @name Transition
 	 * @description A jQuery plugin for CSS transition events.
 	 * @type widget
-	 * @main transition.js
-	 * @dependency jQuery
 	 * @dependency core.js
 	 */
 

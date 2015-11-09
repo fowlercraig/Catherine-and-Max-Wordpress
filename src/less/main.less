@@ -1,25 +1,29 @@
+// Vendor
+
 @import 'vendor.less';
+@import 'site/_setup.less';
+@import 'site/_base.less';
+@import 'site/_fonts.less';
+@import 'site/_buttons.less'; // Depends on _fonts.less
+@import 'site/_banner.less';
+@import 'site/_mailchimp.less';
+@import 'site/_alert.less';
 
-// Style Config
 
-@import 'default/_setup.less';
-@import 'default/_base.less';
-@import 'default/_fonts.less';
-@import 'default/_buttons.less';
-@import 'default/_error.less';
-@import 'default/_gforms.less';
-@import 'default/_menu-mobile.less';
+@import 'site/_scaffold.less';
+@import 'site/_header.less';
+@import 'site/_footer.less';
+@import 'site/_page-header.less';
+@import 'site/_page-content.less';
 
-// Scaffolding
 
-@import 'default/_header.less';
-@import 'default/_entry.less';
-@import 'default/_widgets.less';
+// Specific Pages
+@import 'site/_page-home.less';
 
-// Splash
-
-@import 'splash/_main.less';
-
-// Shopify
-
-@import 'store/_shopify--bag.less';
+// Shopify Specific
+@import 'site/_bar--sort.less';
+@import 'site/_bar--breadcrumbs.less';
+@import 'shopify/_collection.less';
+@import 'shopify/_cart.less';
+@import 'site/_product-grid';
+@import 'site/_product';

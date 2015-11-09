@@ -1,0 +1,186 @@
+body {
+   @media @tablet {
+      padding: @spaced;   
+   }
+
+}
+
+#wrapper {
+   position: relative;
+}
+
+#content {
+
+   background: #FEF8ED url('/assets/MDR+CL06.jpg') center bottom no-repeat;
+   background-size: contain;
+   background-blend-mode: multiply;
+
+   @media @min {
+      padding-bottom: 220px;
+   }
+
+   @media @tablet {
+      padding-bottom: 400px;
+   }
+
+   @media @desktop {
+      padding-bottom: 600px;
+   }
+
+   @media @max {
+      padding-bottom: 700px;
+   }
+
+   &.fixed-header {
+
+      padding-top: 75px;
+
+   }
+
+}
+
+.home-module {
+
+   display: block;
+   background: fade(@blue, 95%);
+   margin: 1px;
+   position: relative;
+   color: @white;
+
+   &.x-small {
+      height: 200px;
+   }
+
+   &.small {
+      height: 300px;
+   }
+
+   &.medium {
+      height: 400px;
+   }
+
+   h3 {
+      margin: 0;
+   }
+
+   h1,h2,h3,h4,h5,h6 {
+      color: inherit;
+   }
+   a {
+      color: @white50;
+      &:hover {
+         color: @white;
+      }
+   }
+
+}
+
+.section {
+
+   padding: @spaced*3 0;
+
+   &--compact {
+      padding: @spaced 0;
+   }
+}
+
+small {
+   color: fade(@red, 70%);
+   a {
+      color: inherit;
+      .headerFont();
+      text-transform: uppercase;
+      font-weight: 300;
+      .font_size(10);
+      letter-spacing: 1px;
+   }
+}
+
+
+.register {
+   &-wrapper {
+      background: fade(#FEF8ED, 90%);
+      border: 1px solid @red;
+      padding: @spaced/2 @spaced;
+      .headerFont();
+      font-weight: 300;
+      text-transform: uppercase;
+      .font_size(12);
+      letter-spacing: 1px;
+   }
+   a {
+      color: @red;
+      display: block;
+      padding: @spaced/1.5 0 @spaced/2;
+      border-bottom: 1px dashed @red;
+   }
+   &-item {
+      img {
+         margin: auto;
+         margin-bottom: 8px;
+         display: block;
+         height: 40px;
+         width: auto;
+      }
+      @media @min {
+         &:nth-child(2n+1) {
+            a {
+               border-right: 0;
+            }
+         }
+         &:nth-last-child(-n+1) {
+            a {
+               border-bottom: 0;
+            }
+         }
+      }
+      @media @mobile {
+         &:nth-child(2n+2) {
+            a {
+               border-right: 0;
+            }
+         }
+         &:nth-last-child(-n+2) {
+            a {
+               border-bottom: 0;
+            }
+         }
+      }
+      @media @tablet {
+         &:nth-child(2n+2) {
+            a {
+               border-right: 0;
+            }
+         }
+         &:nth-last-child(-n+2) {
+            a {
+               border-bottom: 0;
+            }
+         }
+      }
+      @media @desktop {
+         &:nth-child(2n+2) {
+            a {
+               border-right: 0;
+            }
+         }
+         &:nth-last-child(-n+2) {
+            a {
+               border-bottom: 0;
+            }
+         }
+      }
+      @media @max {
+         &:nth-child(4n+4) {
+            a {
+               border-right: 0;
+            }
+         }
+         &:nth-last-child(-n+4) {
+            a {
+               border-bottom: 0;
+            }
+         }
+      }
+   }
+}

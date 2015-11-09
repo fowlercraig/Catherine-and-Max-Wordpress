@@ -1,0 +1,49 @@
+.page {
+
+	&-header {
+
+		//padding: @spaced*8 0 @spaced*4;
+		margin-bottom: @spaced*2;
+		position: relative;
+		
+
+		&_image {
+			height: 80px;
+			//background: @black;	
+			margin-bottom: @spaced*2;
+		}
+
+		&-content {
+			position: relative;
+			z-index: 1;
+			color: @white;
+		}
+
+		&-bg {
+			background: @blue;
+			.cover();
+			width: 9999px;
+			left: -999px;
+		}
+
+		.emphasized {
+			.font_size(26);
+		}
+
+		.divider {
+			margin: 0;
+		}
+
+	}
+
+	&-title {
+		//color: @white;
+		text-transform: capitalize;
+		.font_size(40);
+		margin-bottom: 0;
+		text-transform: uppercase;
+		letter-spacing: 2px;
+		text-rendering: optimizeLegibility;
+	}
+
+}

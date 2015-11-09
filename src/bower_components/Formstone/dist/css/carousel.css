@@ -1,4 +1,4 @@
-/*! formstone v0.8.26 [carousel.css] 2015-11-01 | MIT License | formstone.it */
+/*! formstone v0.6.4 [carousel.css] 2015-06-08 | MIT License | formstone.it */
 
 /**
 	 * @class
@@ -18,30 +18,6 @@
 	 * @type modifier
 	 * @description Indicates enabled state
 	 */
-/**
-	 * @class
-	 * @name .fs-carousel.fs-rtl
-	 * @type modifier
-	 * @description Indicates right to left display
-	 */
-/**
-	 * @class
-	 * @name .fs-carousel.fs-carousel-auto_height
-	 * @type modifier
-	 * @description Indicates auto height sizing
-	 */
-/**
-	 * @class
-	 * @name .fs-carousel.fs-carousel-contained
-	 * @type modifier
-	 * @description Indicates overflow: hidden
-	 */
-/**
-	 * @class
-	 * @name .fs-carousel.fs-carousel-single
-	 * @type modifier
-	 * @description Indicates single item display
-	 */
 .fs-carousel {
   /**
 		 * @class
@@ -60,12 +36,6 @@
 		 * @name .fs-carousel-container
 		 * @type element
 		 * @description Canister container
-		 */
-  /**
-		 * @class
-		 * @name .fs-carousel-canister
-		 * @type element
-		 * @description Item container
 		 */
   /**
 		 * @class
@@ -143,6 +113,7 @@
 .fs-carousel.fs-carousel-enabled {
   width: 100%;
   position: relative;
+  overflow: hidden;
 }
 .fs-carousel.fs-carousel-enabled:after {
   clear: both;
@@ -163,14 +134,9 @@
       -ms-user-select: none !important;
           user-select: none !important;
 }
-.fs-carousel-enabled.fs-carousel-contained,
-.fs-carousel-enabled.fs-carousel-contained .fs-carousel-viewport,
-.fs-carousel-enabled.fs-carousel-contained .fs-carousel-wrapper,
-.fs-carousel-enabled.fs-carousel-contained .fs-carousel-container {
-  overflow: hidden;
-}
 .fs-carousel-enabled .fs-carousel-viewport {
   position: relative;
+  overflow: hidden;
 }
 .fs-carousel-enabled .fs-carousel-viewport:after {
   clear: both;
@@ -179,6 +145,7 @@
 }
 .fs-carousel-enabled .fs-carousel-wrapper {
   position: relative;
+  overflow: hidden;
 }
 .fs-carousel-enabled .fs-carousel-wrapper:after {
   clear: both;
@@ -187,6 +154,7 @@
 }
 .fs-carousel-enabled .fs-carousel-container {
   position: relative;
+  overflow: hidden;
 }
 .fs-carousel-enabled .fs-carousel-container:after {
   clear: both;
@@ -204,12 +172,7 @@
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
 }
-.fs-carousel-enabled.fs-carousel-auto_height .fs-carousel-canister {
-  -webkit-transition: height 0.5s ease, -webkit-transform 0.5s ease;
-          transition: height 0.5s ease, transform 0.5s ease;
-}
 .fs-carousel-enabled .fs-carousel-item {
-  min-height: 1px;
   display: block;
   float: left;
 }
@@ -220,16 +183,6 @@
       -ms-user-select: none;
           user-select: none;
 }
-.fs-carousel-single .fs-carousel-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.fs-carousel-single .fs-carousel-item.fs-carousel-visible {
-  position: relative;
-  z-index: 2;
-}
 .fs-carousel-controls {
   display: none;
 }
@@ -238,18 +191,15 @@
   margin: 0;
   padding: 0;
 }
-.fs-carousel-enabled .fs-carousel-controls.fs-carousel-visible,
-.fs-carousel-controls_custom.fs-carousel-visible {
+.fs-carousel-enabled .fs-carousel-controls.fs-carousel-visible {
   display: block;
 }
 .fs-carousel-enabled .fs-carousel-control {
   position: absolute;
   top: 0;
   bottom: 0;
-  border: 0;
   cursor: pointer;
   display: block;
-  padding: 0;
   visibility: hidden;
   width: 40px;
   height: 40px;
@@ -282,33 +232,23 @@
   visibility: visible;
   opacity: 1;
 }
-.fs-carousel-enabled .fs-carousel-control_previous,
-.fs-carousel-enabled.fs-carousel-rtl .fs-carousel-control_next {
-  right: auto;
+.fs-carousel-enabled .fs-carousel-control_previous {
   left: 20px;
 }
-.fs-carousel-enabled .fs-carousel-control_previous:before,
-.fs-carousel-enabled.fs-carousel-rtl .fs-carousel-control_next:before {
+.fs-carousel-enabled .fs-carousel-control_previous:before {
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
   border-right: 10.5px solid #333333;
-  border-left: none;
   margin-left: 13.7px;
-  margin-right: auto;
 }
-.fs-carousel-enabled .fs-carousel-control_next,
-.fs-carousel-enabled.fs-carousel-rtl .fs-carousel-control_previous {
+.fs-carousel-enabled .fs-carousel-control_next {
   right: 20px;
-  left: auto;
 }
-.fs-carousel-enabled .fs-carousel-control_next:before,
-.fs-carousel-enabled.fs-carousel-rtl .fs-carousel-control_previous:before {
+.fs-carousel-enabled .fs-carousel-control_next:before {
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
   border-left: 10.5px solid #333333;
-  border-right: none;
   margin-right: 13.7px;
-  margin-left: auto;
 }
 .fs-carousel-enabled .fs-carousel-control_disabled {
   opacity: 0;
@@ -326,10 +266,8 @@
   display: block;
 }
 .fs-carousel-enabled .fs-carousel-page {
-  border: 0;
   cursor: pointer;
   display: inline-block;
-  padding: 0;
   width: 10px;
   height: 10px;
   background: #333333;
@@ -345,10 +283,4 @@
 }
 .fs-carousel-enabled .fs-carousel-page.fs-carousel-active {
   opacity: 1;
-}
-.fs-carousel-enabled.fs-carousel-rtl {
-  direction: rtl;
-}
-.fs-carousel-enabled.fs-carousel-rtl .fs-carousel-item {
-  float: right;
 }

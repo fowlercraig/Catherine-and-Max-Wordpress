@@ -61,7 +61,7 @@
 
 			// Emulate event
 
-			buildLightbox.apply(Window, [{ data: $.extend(true, {}, {
+			buildLightbox.apply(Window, [{ data: $.extend({}, {
 				$object: $target
 			}, Defaults, options || {}) }]);
 		}
@@ -83,8 +83,9 @@
 				source         = ($el && $el[0].href) ? $el[0].href || "" : "",
 				hash           = ($el && $el[0].hash) ? $el[0].hash || "" : "",
 				sourceParts    = source.toLowerCase().split(".").pop().split(/\#|\?/),
+				extension      = sourceParts[0],
 				type           = ($el) ? $el.data(Namespace + "-type") : "",
-				isImage	       = ( (type === "image") || (source.match(data.fileTypes) || source.substr(0, 10) === "data:image") ),
+				isImage	       = ( (type === "image") || ($.inArray(extension, data.extensions) > -1 || source.substr(0, 10) === "data:image") ),
 				isVideo	       = checkVideo(source),
 				isUrl	       = ( (type === "url") || (!isImage && !isVideo && source.substr(0, 4) === "http" && !hash) ),
 				isElement      = ( (type === "element") || (!isImage && !isVideo && !isUrl && (hash.substr(0, 1) === "#")) ),
@@ -114,9 +115,6 @@
 				oldContentHeight   : 0,
 				oldContentWidth    : 0
 			}, data);
-
-			// Touch
-			Instance.touch = (data.touch && Instance.isMobile && Instance.isTouch);
 
 			// Double the margin
 			Instance.margin *= 2;
@@ -247,24 +245,23 @@
 
 			// Update gallery
 			if (Instance.gallery.active) {
-				Instance.$lightbox.addClass(RawClasses.has_controls);
 				updateGalleryControls();
 			}
 
 			// Bind events
 			$Window.on(Events.keyDown, onKeyDown);
 
-			$Body.on(Events.click, [Classes.overlay, Classes.close].join(", "), closeLightbox);
+			$Body.on(Events.clickTouchStart, [Classes.overlay, Classes.close].join(", "), closeLightbox);
 
 			if (Instance.gallery.active) {
-				Instance.$lightbox.on(Events.click, Classes.control, advanceGallery);
+				Instance.$lightbox.on(Events.clickTouchStart, Classes.control, advanceGallery);
 			}
 
 			if (Instance.isMobile && Instance.isTouch) {
-				Instance.$lightbox.on(Events.click, Classes.caption_toggle, toggleCaption);
+				Instance.$lightbox.on(Events.clickTouchStart, Classes.caption_toggle, toggleCaption);
 			}
 
-			Instance.$lightbox.fsTransition({
+			Instance.$lightbox.transition({
 				property: "opacity"
 			},
 			function() {
@@ -335,12 +332,10 @@
 		Functions.killEvent(e);
 
 		if (Instance) {
-			Instance.$lightbox.fsTransition("destroy");
-			Instance.$container.fsTransition("destroy");
+			Instance.$lightbox.transition("destroy");
+			Instance.$container.transition("destroy");
 
-			clearTouch();
-
-			Instance.$lightbox.addClass(Classes.raw.animating).fsTransition({
+			Instance.$lightbox.addClass(Classes.raw.animating).transition({
 				property: "opacity"
 			},
 			function(e) {
@@ -384,20 +379,18 @@
 			});
 		}
 
-		/*
 		if (!Instance.visible && Instance.isMobile && Instance.gallery.active) {
-			Instance.$content.fsTouch({
+			Instance.$content.touch({
 				axis: "x",
 				swipe: true
 			}).on(Events.swipe, onSwipe);
 		}
-		*/
 
-		Instance.$lightbox.fsTransition({
+		Instance.$lightbox.transition({
 			property: (Instance.contentHeight !== Instance.oldContentHeight) ? "height" : "width"
 		},
 		function() {
-			Instance.$container.fsTransition({
+			Instance.$container.transition({
 				property: "opacity"
 			},
 			function() {
@@ -430,7 +423,7 @@
 		var contentHasChanged = (Instance.oldContentHeight !== Instance.contentHeight || Instance.oldContentWidth !== Instance.contentWidth);
 
 		if (Instance.isMobile || !contentHasChanged) {
-			Instance.$lightbox.fsTransition("resolve");
+			Instance.$lightbox.transition("resolve");
 		}
 
 		// Track content size changes
@@ -558,11 +551,8 @@
 	 */
 
 	function loadImage(source) {
-		Instance.hasScaled = false;
-
 		// Cache current image
-		Instance.$imageContainer = $('<div class="' + Classes.raw.image_container + '"><img></div>');
-		Instance.$image = Instance.$imageContainer.find("img");
+		Instance.$image = $("<img>");
 
 		Instance.$image.one(Events.load, function() {
 			var naturalSize = calculateNaturalSize(Instance.$image);
@@ -575,14 +565,12 @@
 				Instance.naturalWidth  /= 2;
 			}
 
-			Instance.$content.prepend(Instance.$imageContainer);
+			Instance.$content.prepend(Instance.$image);
 
 			if (Instance.$caption.html() === "") {
 				Instance.$caption.hide();
-				Instance.$lightbox.removeClass(RawClasses.has_caption);
 			} else {
 				Instance.$caption.show();
-				Instance.$lightbox.addClass(RawClasses.has_caption);
 			}
 
 			// Size content to be sure it fits the viewport
@@ -590,23 +578,6 @@
 
 			openLightbox();
 
-			if (Instance.touch) {
-				cacheScale();
-				onScale({
-					scale: 1,
-					deltaX: 0,
-					deltaY: 0
-				});
-				onScaleEnd();
-
-				Instance.$container.fsTouch({
-					pan      : true,
-					scale    : true,
-					// swipe    : true
-				}).on(Events.scaleStart, onScaleStart)
-				  .on(Events.scaleEnd, onScaleEnd)
-				  .on(Events.scale, onScale);
-			}
 		}).error(loadError)
 		  .attr("src", source)
 		  .addClass(Classes.raw.image);
@@ -615,108 +586,6 @@
 		if (Instance.$image[0].complete || Instance.$image[0].readyState === 4) {
 			Instance.$image.trigger(Events.load);
 		}
-	}
-
-	function clearTouch() {
-		if (Instance.$image && Instance.$image.length) {
-			Instance.$container.fsTouch("destroy");
-		}
-	}
-
-	function cacheScale() {
-		Instance.scalePosition = Instance.$imageContainer.position();
-
-		Instance.scaleY = Instance.scalePosition.top;
-		Instance.scaleX = Instance.scalePosition.left;
-
-		Instance.scaleHeight = Instance.$image.outerHeight();
-		Instance.scaleWidth  = Instance.$image.outerWidth();
-	}
-
-	function onScaleStart(e) {
-		cacheScale();
-
-		Instance.$lightbox.removeClass(Classes.raw.animating);
-	}
-
-	function onScale(e) {
-		Instance.targetContainerY = Instance.scaleY + e.deltaY;
-		Instance.targetContainerX = Instance.scaleX + e.deltaX;
-
-		Instance.targetImageHeight = Instance.scaleHeight * e.scale;
-		Instance.targetImageWidth  = Instance.scaleWidth  * e.scale;
-
-		if (Instance.targetImageHeight < Instance.scaleMinHeight) {
-			Instance.targetImageHeight = Instance.scaleMinHeight;
-		}
-		if (Instance.targetImageHeight > Instance.scaleMaxHeight) {
-			Instance.targetImageHeight = Instance.scaleMaxHeight;
-		}
-
-		if (Instance.targetImageWidth < Instance.scaleMinWidth) {
-			Instance.targetImageWidth = Instance.scaleMinWidth;
-		}
-		if (Instance.targetImageWidth > Instance.scaleMaxWidth) {
-			Instance.targetImageWidth = Instance.scaleMaxWidth;
-		}
-
-		Instance.hasScaled = true;
-		Instance.isScaling = true;
-
-		Instance.$imageContainer.css({
-			top:  Instance.targetContainerY,
-			left: Instance.targetContainerX
-		});
-
-		Instance.$image.css({
-			height    : Instance.targetImageHeight,
-			width     : Instance.targetImageWidth,
-			top       : -(Instance.targetImageHeight / 2),
-			left      : -(Instance.targetImageWidth  / 2)
-		});
-	}
-
-	function onScaleEnd(e) {
-		cacheScale();
-
-		Instance.isScaling = false;
-
-		var conHeight = Instance.$container.outerHeight() - Instance.metaHeight,
-			conWidth  = Instance.$container.outerWidth();
-
-		Instance.scaleMinY    = conHeight - ( Instance.scaleHeight / 2 );
-		Instance.scaleMinX    = conWidth  - ( Instance.scaleWidth  / 2 );
-		Instance.scaleMaxY    = ( Instance.scaleHeight / 2 );
-		Instance.scaleMaxX    = ( Instance.scaleWidth  / 2 );
-
-		if (Instance.scaleHeight < conHeight) {
-			Instance.scalePosition.top = conHeight / 2;
-		} else {
-			if (Instance.scalePosition.top < Instance.scaleMinY) {
-				Instance.scalePosition.top = Instance.scaleMinY;
-			}
-			if (Instance.scalePosition.top > Instance.scaleMaxY) {
-				Instance.scalePosition.top = Instance.scaleMaxY;
-			}
-		}
-
-		if (Instance.scaleWidth < conWidth) {
-			Instance.scalePosition.left = conWidth / 2;
-		} else {
-			if (Instance.scalePosition.left < Instance.scaleMinX) {
-				Instance.scalePosition.left = Instance.scaleMinX;
-			}
-			if (Instance.scalePosition.left > Instance.scaleMaxX) {
-				Instance.scalePosition.left = Instance.scaleMaxX;
-			}
-		}
-
-		Instance.$lightbox.addClass(Classes.raw.animating);
-
-		Instance.$imageContainer.css({
-			left: Instance.scalePosition.left,
-			top:  Instance.scalePosition.top
-		});
 	}
 
 	/**
@@ -801,24 +670,12 @@
 				});
 			}
 
-			if (!Instance.hasScaled) {
-				Instance.$image.css({
-					height: Instance.targetImageHeight,
-					width:  Instance.targetImageWidth
-				});
-
-				if (Instance.touch) {
-					Instance.$image.css({
-						top     : -(Instance.targetImageHeight / 2),
-						left    : -(Instance.targetImageWidth  / 2)
-					});
-				} else {
-					Instance.$image.css({
-						marginTop     : Instance.imageMarginTop,
-						marginLeft    : Instance.imageMarginLeft
-					});
-				}
-			}
+			Instance.$image.css({
+				height: Instance.targetImageHeight,
+				width:  Instance.targetImageWidth,
+				marginTop:  Instance.imageMarginTop,
+				marginLeft: Instance.imageMarginLeft
+			});
 
 			if (!Instance.isMobile) {
 				Instance.metaHeight = Instance.$meta.outerHeight(true);
@@ -826,13 +683,6 @@
 			}
 
 			count ++;
-		}
-
-		if (Instance.touch) {
-			Instance.scaleMinHeight    = Instance.targetImageHeight;
-			Instance.scaleMinWidth     = Instance.targetImageWidth;
-			Instance.scaleMaxHeight    = Instance.naturalHeight;
-			Instance.scaleMaxWidth     = Instance.naturalWidth;
 		}
 	}
 
@@ -894,16 +744,10 @@
 	function loadVideo(source) {
 		var youtubeParts = source.match( /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i ), // 1
 			vimeoParts   = source.match( /(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/ ), // 3
-			queryString  = source.split("?"),
 			url = (youtubeParts !== null) ? "//www.youtube.com/embed/" + youtubeParts[1] : "//player.vimeo.com/video/" + vimeoParts[3];
 
-		// if we have a query string
-		if (queryString.length >= 2) {
-			url += "?" + queryString.slice(1)[0].trim();
-		}
-
-		Instance.$videoWrapper = $('<div class="' + Classes.raw.video_wrapper + '"></div>');
-		Instance.$video = $('<iframe class="' + Classes.raw.video + '" frameborder="0" seamless="seamless" allowfullscreen></iframe>');
+		Instance.$videoWrapper = $('<div class="' + Classes.raw.videoWrapper + '"></div>');
+		Instance.$video = $('<iframe class="' + Classes.raw.video + '" seamless="seamless"></iframe>');
 
 		Instance.$video.attr("src", url)
 				   .addClass(Classes.raw.video)
@@ -1026,7 +870,6 @@
 		if (!Instance.isAnimating && !$control.hasClass(Classes.raw.control_disabled)) {
 			Instance.isAnimating = true;
 
-			clearTouch();
 			closeCaption();
 
 			Instance.gallery.index += ($control.hasClass(Classes.raw.control_next)) ? 1 : -1;
@@ -1039,7 +882,7 @@
 
 			Instance.$lightbox.addClass(Classes.raw.animating);
 
-			Instance.$container.fsTransition({
+			Instance.$container.transition({
 				property: "opacity"
 			},
 			function() {
@@ -1261,9 +1104,6 @@
 	 * @name Lightbox
 	 * @description A jQuery plugin for simple modals.
 	 * @type widget
-	 * @main lightbox.js
-	 * @main lightbox.css
-	 * @dependency jQuery
 	 * @dependency core.js
 	 * @dependency touch.js
 	 * @dependency transition.js
@@ -1275,7 +1115,7 @@
 			/**
 			 * @options
 			 * @param customClass [string] <''> "Class applied to instance"
-			 * @param fileTypes [regex] <> "Image file types"
+			 * @param extensions [array] <"jpg", "sjpg", "jpeg", "png", "gif"> "Image type extensions"
 			 * @param fixed [boolean] <false> "Flag for fixed positioning"
 			 * @param formatter [function] <$.noop> "Caption format function"
 			 * @param infinite [boolean] <false> "Flag for infinite galleries"
@@ -1292,14 +1132,13 @@
 			 * @param retina [boolean] <false> "Flag to use 'retina' sizing (halves natural sizes)"
 			 * @param requestKey [string] <'fs-lightbox'> "GET variable for ajax / iframe requests"
 			 * @param top [int] <0> "Target top position; over-rides centering"
-			 * @param touch [boolean] <true> "Flag to allow touch zoom on 'mobile' rendering"
 			 * @param videoRadio [number] <0.5625> "Video height / width ratio (9 / 16 = 0.5625)"
 			 * @param videoWidth [int] <800> "Video max width"
 			 */
 
 			defaults: {
 				customClass    : "",
-				fileTypes      : /\.(jpg|sjpg|jpeg|png|gif)$/i,
+				extensions     : [ "jpg", "sjpg", "jpeg", "png", "gif" ],
 				fixed          : false,
 				formatter      : formatCaption,
 				infinite       : false,
@@ -1318,7 +1157,6 @@
 				retina         : false,
 				requestKey     : "fs-lightbox",
 				top            : 0,
-				touch          : true,
 				videoRatio     : 0.5625,
 				videoWidth     : 800
 			},
@@ -1338,7 +1176,6 @@
 				"container",
 				"content",
 				"image",
-				"image_container",
 				"video",
 				"video_wrapper",
 				"tools",
@@ -1354,8 +1191,6 @@
 				"caption_toggle",
 				"caption",
 				"caption_open",
-				"has_controls",
-				"has_caption",
 				"iframe",
 				"error",
 				"lock"
@@ -1369,7 +1204,9 @@
 
 			events: {
 				open     : "open",
-				close    : "close"
+				close    : "close",
+
+				swipe    : "swipe"
 			},
 
 			methods: {

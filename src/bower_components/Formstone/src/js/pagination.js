@@ -10,7 +10,8 @@
 	 */
 
 	function construct(data) {
-		data.mq = "(max-width:" + (data.maxWidth === Infinity ? "100000px" : data.maxWidth) + ")";
+		data.mq       = "(max-width:" + (data.maxWidth === Infinity ? "100000px" : data.maxWidth) + ")";
+		data.mqGuid   = RawClasses.base + "__" + (GUID++);
 
 		var html = "";
 		html += '<button type="button" class="' + [RawClasses.control, RawClasses.control_previous].join(" ") + '">' + data.labels.previous + '</button>';
@@ -49,12 +50,12 @@
 
 		buildMobilePages(data);
 
-		this.on(Events.click, Classes.page, data, onPageClick)
-			.on(Events.click, Classes.control, data, onControlClick)
-			.on(Events.click, Classes.position, data, onPositionClick)
+		this.on(Events.clickTouchStart, Classes.page, data, onPageClick)
+			.on(Events.clickTouchStart, Classes.control, data, onControlClick)
+			.on(Events.clickTouchStart, Classes.position, data, onPositionClick)
 			.on(Events.change, Classes.select, onPageSelect);
 
-		$.fsMediaquery("bind", data.rawGuid, data.mq, {
+		$.mediaquery("bind", data.mqGuid, data.mq, {
 			enter: function() {
 				data.$el.addClass(RawClasses.mobile);
 			},
@@ -74,7 +75,7 @@
 	 */
 
 	function destruct(data) {
-		$.fsMediaquery("unbind", data.rawGuid);
+		$.mediaquery("unbind", data.mqGuid, data.mq);
 
 		data.$controls.remove();
 		data.$ellipsis.remove();
@@ -277,9 +278,6 @@
 	 * @name Pagination
 	 * @description A jQuery plugin for simple pagination.
 	 * @type widget
-	 * @main pagination.js
-	 * @main pagination.css
-	 * @dependency jQuery
 	 * @dependency core.js
 	 * @dependency mediaquery.js
 	 */
@@ -354,6 +352,7 @@
 		Classes       = Plugin.classes,
 		RawClasses    = Classes.raw,
 		Events        = Plugin.events,
-		Functions     = Plugin.functions;
+		Functions     = Plugin.functions,
+		GUID          = 0;
 
 })(jQuery, Formstone);

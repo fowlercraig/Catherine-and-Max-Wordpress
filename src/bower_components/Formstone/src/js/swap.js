@@ -10,6 +10,7 @@
 	 */
 
 	function construct(data) {
+		data.guid       = "__" + (GUID++);
 		data.enabled    = false;
 		data.active     = false;
 
@@ -18,43 +19,36 @@
 		data.target     = this.data(Namespace + "-target");
 		data.$target    = $(data.target).addClass(data.classes.raw.target);
 
-		data.mq         = "(max-width:" + (data.maxWidth === Infinity ? "100000px" : data.maxWidth) + ")";
+		data.linked     = this.data(Namespace + "-linked");
 
-		// live query for linked to avoid missing new elements
-		var linked      = this.data(Namespace + "-linked");
-		data.linked     = linked ? '[data-' + Namespace + '-linked="' + linked + '"]' : false;
+		data.mq         = "(max-width:" + (data.maxWidth === Infinity ? "100000px" : data.maxWidth) + ")";
+		data.mqGuid     = data.classes.raw.base + "__" + (GUID++);
 
 		// live query for the group to avoid missing new elements
 		var group       = this.data(Namespace + "-group");
 		data.group      = group ? '[data-' + Namespace + '-group="' + group + '"]' : false;
 
-		data.$swaps     = $().add(this).add(data.$target);
-
-		this.on(Events.click + data.dotGuid, data, onClick);
-	}
-
-	/**
-	 * @method private
-	 * @name postConstruct
-	 * @description Run post build.
-	 * @param data [object] "Instance data"
-	 */
-
-	function postConstruct(data) {
-		if (!data.collapse && data.group && !$(data.group).filter("[data-" + Namespace + "-active]").length) {
+		if (!data.collapse && data.group) {
 			$(data.group).eq(0).attr("data-" + Namespace + "-active", "true");
 		}
 
 		// Should be activate when enabled
-		data.onEnable = this.data(Namespace + "-active") || false;
+		data.onEnable = this.data(Namespace + "-active");
+
+		data.$swaps = $().add(this).add(data.$target);
+
+		this.touch({
+				tap: true
+			})
+			.on(Events.tap + data.guid, data, onClick);
 
 		// Media Query support
-		$.fsMediaquery("bind", data.rawGuid, data.mq, {
+		$.mediaquery("bind", data.mqGuid, data.mq, {
 			enter: function() {
-				enable.call(data.$el, data, true);
+				enable.call(data.$el, data);
 			},
 			leave: function() {
-				disable.call(data.$el, data, true);
+				disable.call(data.$el, data);
 			}
 		});
 	}
@@ -67,10 +61,12 @@
 	 */
 
 	function destruct(data) {
-		$.fsMediaquery("unbind", data.rawGuid);
+		$.mediaquery("unbind", data.mqGuid, data.mq);
 
 		data.$swaps.removeClass( [data.classes.raw.enabled, data.classes.raw.active].join(" ") )
 				   .off(Events.namespace);
+
+		this.touch("destroy");
 	}
 
 	/**
@@ -82,21 +78,17 @@
 
 	function activate(data, fromLinked) {
 		if (data.enabled && !data.active) {
-			if (data.group && !fromLinked) {
-				// Deactivates grouped instances
-				$(data.group).not(data.$el).not(data.linked)[Plugin.namespaceClean]("deactivate", true);
-			}
+			// Deactivates grouped instances
+			$(data.group).not(data.$el)[Plugin.namespace]("deactivate");
 
 			// index in group
 			var index = (data.group) ? $(data.group).index(data.$el) : null;
 
 			data.$swaps.addClass(data.classes.raw.active);
 
-			if (!fromLinked) {
-				if (data.linked) {
-					// Linked handles
-					$(data.linked).not(data.$el)[Plugin.namespaceClean]("activate", true);
-				}
+			if (data.linked && !fromLinked) {
+				// Linked handles
+				$(data.linked).not(data.$el).swap("activate", true);
 			}
 
 			this.trigger(Events.activate, [index]);
@@ -116,11 +108,9 @@
 		if (data.enabled && data.active) {
 			data.$swaps.removeClass(data.classes.raw.active);
 
-			if (!fromLinked) {
-				if (data.linked) {
-					// Linked handles
-					$(data.linked).not(data.$el)[Plugin.namespaceClean]("deactivate", true);
-				}
+			if (data.linked && !fromLinked) {
+				// Linked handles
+				$(data.linked).not(data.$el).swap("deactivate", true);
 			}
 
 			this.trigger(Events.deactivate);
@@ -138,20 +128,21 @@
 
 	function enable(data, fromLinked) {
 		if (!data.enabled) {
-			data.enabled = true;
-
 			data.$swaps.addClass(data.classes.raw.enabled);
 
 			if (!fromLinked) {
 				// Linked handles
-				$(data.linked).not(data.$el)[Plugin.namespaceClean]("enable");
+				$(data.linked).not(data.$el).swap("enable");
 			}
+
+			data.enabled = true;
 
 			this.trigger(Events.enable);
 
 			if (data.onEnable) {
-				data.active = false;
-				activate.call(this, data);
+				data.active = true;
+				data.$swaps.addClass(data.classes.raw.active);
+				// activate.call(this, data);
 			} else {
 				data.active = true;
 				deactivate.call(this, data);
@@ -168,16 +159,16 @@
 
 	function disable(data, fromLinked) {
 		if (data.enabled) {
-			data.enabled = false;
-
 			data.$swaps.removeClass( [data.classes.raw.enabled, data.classes.raw.active].join(" ") );
 
 			if (!fromLinked) {
 				// Linked handles
-				$(data.linked).not(data.$el)[Plugin.namespaceClean]("disable");
+				$(data.linked).not(data.$el).swap("disable");
 			}
 
 			this.trigger(Events.disable);
+
+			data.enabled = false;
 		}
 	}
 
@@ -205,10 +196,9 @@
 	 * @name Swap
 	 * @description A jQuery plugin for toggling states.
 	 * @type widget
-	 * @main swap.js
-	 * @dependency jQuery
 	 * @dependency core.js
 	 * @dependency mediaquery.js
+	 * @dependency touch.js
 	 */
 
 	var Plugin = Formstone.Plugin("swap", {
@@ -240,6 +230,7 @@
 			 */
 
 			events: {
+				tap           : "tap",
 				activate      : "activate",
 				deactivate    : "deactivate",
 				enable        : "enable",
@@ -248,7 +239,6 @@
 
 			methods: {
 				_construct    : construct,
-				_postConstruct: postConstruct,
 				_destruct     : destruct,
 
 				// Public Methods
@@ -265,6 +255,7 @@
 		Namespace     = Plugin.namespace,
 		Classes       = Plugin.classes,
 		Events        = Plugin.events,
-		Functions     = Plugin.functions;
+		Functions     = Plugin.functions,
+		GUID          = 0;
 
 })(jQuery, Formstone);

@@ -23,7 +23,6 @@ module.exports = function(grunt) {
 					"param",
 					"event",
 					"return",
-					"main",
 					"dependency"
 				];
 
@@ -93,11 +92,6 @@ module.exports = function(grunt) {
 								_return["events"] = [];
 							}
 							_return["events"].push(part);
-						} else if (key === "main") {
-							if (!_return.main) {
-								_return["main"] = [];
-							}
-							_return["main"].push(part);
 						} else if (key === "dependency") {
 							if (!_return.dependencies) {
 								_return["dependencies"] = [];
@@ -182,7 +176,6 @@ module.exports = function(grunt) {
 							doc.namespace = plugin.namespace;
 							doc.type = plugin.type;
 							doc.description = plugin.description;
-							doc.main = plugin.main;
 							doc.dependencies = plugin.dependencies;
 						} else if (content.indexOf("@options") > -1) {
 							var params = parseJavascript(content);
@@ -211,6 +204,13 @@ module.exports = function(grunt) {
 						}
 					}
 				}
+
+				var parts = jsf.split("/"),
+					p = parts[parts.length - 1];
+
+				if (doc.main.indexOf(p) < 0) {
+					doc.main.push(p);
+				}
 			}
 
 			if (cssFile) {
@@ -236,6 +236,13 @@ module.exports = function(grunt) {
 							doc.description = grid.description;
 						}
 					}
+				}
+
+				var parts = cssf.split("/"),
+					p = parts[parts.length - 1];
+
+				if (doc.main.indexOf(p) < 0) {
+					doc.main.push(p.replace("less", "css"));
 				}
 			}
 
@@ -563,34 +570,31 @@ module.exports = function(grunt) {
 
 			docshtml += '<h5>About</h5>';
 			docshtml += '<ul>';
-			docshtml += '<li><a href="{{= it.site_root }}start.html" data-analytics-event="MainNav, Click, start">Getting Started</a></li>';
-			docshtml += '<li><a href="{{= it.site_root }}upgrade.html" data-analytics-event="MainNav, Click, upgrade">Upgrade Guide</a></li>';
-			docshtml += '<li><a href="{{= it.site_root }}contribute.html" data-analytics-event="MainNav, Click, contribute">Contributing</a></li>';
+			docshtml += '<li><a href="{{= it.site_root }}start.html">Getting Started</a></li>';
+			docshtml += '<li><a href="{{= it.site_root }}upgrade.html">Upgrade Guide</a></li>';
+			docshtml += '<li><a href="{{= it.site_root }}contribute.html">Contributing</a></li>';
 			docshtml += '</ul>';
 
 			docshtml += '<h5>Library</h5>';
 			docshtml += '<ul>';
-			docshtml += '<li><a href="{{= it.component_root }}core.html" data-analytics-event="MainNav, Click, core">Core</a></li>';
+			docshtml += '<li><a href="{{= it.component_root }}core.html">Core</a></li>';
 			for (var i in allDocs.grid) {
 				var d = allDocs.grid[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				docshtml += '<li><a href="{{= it.component_root }}' + n + '.html" data-analytics-event="MainNav, Click, ' + n + '">' + d.name + '</a></li>';
+				docshtml += '<li><a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a></li>';
 			}
 			docshtml += '</ul>';
 			docshtml += '<h5>Utility</h5>';
 			docshtml += '<ul>';
 			for (var i in allDocs.utility) {
 				var d = allDocs.utility[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				docshtml += '<li><a href="{{= it.component_root }}' + n + '.html" data-analytics-event="MainNav, Click, ' + n + '">' + d.name + '</a></li>';
+				docshtml += '<li><a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a></li>';
 			}
 			docshtml += '</ul>';
 			docshtml += '<h5>Widget</h5>';
 			docshtml += '<ul>';
 			for (var i in allDocs.widget) {
 				var d = allDocs.widget[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				docshtml += '<li><a href="{{= it.component_root }}' + n + '.html" data-analytics-event="MainNav, Click, ' + n + '">' + d.name + '</a></li>';
+				docshtml += '<li><a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a></li>';
 			}
 			docshtml += '</ul>';
 
@@ -603,30 +607,25 @@ module.exports = function(grunt) {
 			listhtml += '<a href="{{= it.component_root }}core.html">Core</a>';
 			for (var i in allDocs.grid) {
 				var d = allDocs.grid[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				listhtml += '<a href="{{= it.component_root }}' + n + '.html" data-analytics-event="ComponentNav, Click, ' + n + '">' + d.name + '</a>';
+				listhtml += '<a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a>';
 			}
 			listhtml += '</div>';
 			listhtml += '<h2>Utility</h2>';
 			listhtml += '<div class="listing">';
 			for (var i in allDocs.utility) {
 				var d = allDocs.utility[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				listhtml += '<a href="{{= it.component_root }}' + n + '.html" data-analytics-event="ComponentNav, Click, ' + n + '">' + d.name + '</a>';
+				listhtml += '<a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a>';
 			}
 			listhtml += '</div>';
 			listhtml += '<h2>Widget</h2>';
 			listhtml += '<div class="listing">';
 			for (var i in allDocs.widget) {
 				var d = allDocs.widget[i];
-				var n = d.name.toLowerCase().replace(/ /g, "");
-				listhtml += '<a href="{{= it.component_root }}' + n + '.html" data-analytics-event="ComponentNav, Click, ' + n + '">' + d.name + '</a>';
+				listhtml += '<a href="{{= it.component_root }}' + d.name.toLowerCase().replace(/ /g, "") + '.html">' + d.name + '</a>';
 			}
 			listhtml += '</div>';
 
 			grunt.file.write("demo/templates/partials/component-list.html", listhtml);
-
-			grunt.file.write("demo/pages/components/default.md", '{"template":"components.html","title":"Components","site_root":"../","asset_root":"../","component_root":"../components/"}');
 
 			// Sitemap
 
@@ -668,17 +667,9 @@ module.exports = function(grunt) {
 			markdown = '<a href="http://gruntjs.com" target="_blank"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> \n' +
 					   '<a href="http://badge.fury.io/bo/formstone"><img src="https://badge.fury.io/bo/formstone.svg" alt="Bower version"></a> \n' +
 					   '<a href="https://travis-ci.org/Formstone/Formstone"><img src="https://travis-ci.org/Formstone/Formstone.svg?branch=master" alt="Travis CI"></a> \n\n' +
-					   '# ' + pkg.realname + ' \n\n' +
+					   '# ' + pkg.name + ' \n\n' +
 					   pkg.description + ' \n\n' +
-					   '[Documentation](docs/README.md) <br>' +
-					   '[Changelog](CHANGELOG.md)';
-
-		grunt.file.write(destination, markdown);
-		grunt.log.writeln('File "' + destination + '" created.');
-
-		var chg = grunt.file.read('CHANGELOG.md'),
-			destination = 'demo/pages/changelog.md',
-			markdown = '{"template":"content.html","title":"Changelog","site_root":"../","asset_root":"../","component_root":"../components/"} \n\n' + chg;
+					   '[Documentation](docs/README.md)';
 
 		grunt.file.write(destination, markdown);
 		grunt.log.writeln('File "' + destination + '" created.');

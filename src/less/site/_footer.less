@@ -1,0 +1,48 @@
+#footer {
+
+	padding: @spaced 0;
+	color: @black50;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   .headerFont();
+   .font_size(12);
+
+	a { 
+      color: inherit; 
+      @media @min {
+         width: 100%;
+         height: 40px;
+         line-height: 40px;
+         border-bottom: 1px solid fade(@red, 20%);
+         &:last-child {
+            border-bottom: 0;
+         }
+         color: @red;
+      }
+      @media @tablet {
+         width: auto;
+         height: 50px;
+         line-height: 50px;
+         border-bottom: 0;
+      }
+   }
+
+	&--social {
+		@media @max {
+			text-align: right;
+		}
+	}
+
+   &--copyright {
+      @media @min {
+         text-align: left;
+      }
+      @media @tablet {
+         text-align: left;
+      }
+      @media @max {
+         text-align: center;
+      }
+   }
+
+}

@@ -4,8 +4,8 @@ $settings = array(
 
   'available_scripts'      => array(
     'jquery-g'             => array('//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js','1.11.1'),
-    'plugins'              => array('/assets/js/vendor.min.js'),
-    'scripts'              => array('/assets/js/main.min.js'),
+    'plugins'              => array('/assets/vendor.min.js'),
+    'scripts'              => array('/assets/main.min.js'),
   ),
 
   'default_scripts'        => array(
@@ -14,7 +14,7 @@ $settings = array(
   ),
 
   'available_stylesheets'  => array(
-    'theme'                => array('/assets/css/main.css'),
+    'theme'                => array('/assets/main.css'),
   ),
 
   'default_stylesheets'    => array(

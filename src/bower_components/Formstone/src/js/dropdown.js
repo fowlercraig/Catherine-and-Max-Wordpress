@@ -30,12 +30,11 @@
 		}
 
 		// Grab true original index, only if selected attribute exits
-		var $trueOriginal   = this.find("[selected]").not(":disabled"),
-			$originalOption = this.find(":selected").not(":disabled"),
+		var $originalOption = this.find(":selected").not(":disabled"),
 			originalLabel = $originalOption.text(),
 			originalIndex = this.find("option").index($originalOption);
 
-		if (!data.multiple && data.label !== "" && !$trueOriginal.length) {
+		if (!data.multiple && data.label !== "") {
 			$originalOption = this.prepend('<option value="" class="' + RawClasses.item_placeholder + '" selected>' + data.label + '</option>');
 			originalLabel = data.label;
 			originalIndex = 0;
@@ -94,8 +93,11 @@
 		data.$wrapper         = data.$dropdown.find(Classes.options);
 		data.$placeholder     = data.$dropdown.find(Classes.placeholder);
 		data.index            = -1;
+		data.guid             = GUID++;
 		data.closed           = true;
-		data.focused          = false;
+
+		data.keyDownGUID      = Events.keyDown + data.guid;
+		data.clickGUID        = Events.click + data.guid;
 
 		buildOptions(data);
 
@@ -103,13 +105,17 @@
 			updateOption(originalIndex, data);
 		}
 
-		// Scrollbar support
-		if ($.fn.fsScrollbar !== undefined) {
-			data.$wrapper.fsScrollbar();
+		/*
+		// Scroller support
+		if ($.fn.scroller !== undefined) {
+			data.$wrapper.scroller();
 		}
+		*/
 
 		// Bind events
-		data.$selected.on(Events.click, data, onClick);
+		data.$selected.touch({
+			tap: true
+		}).on(Events.tap, data, onClick);
 
 		data.$dropdown.on(Events.click, Classes.item, data, onSelect)
 					  .on(Events.close, data, onClose);
@@ -119,12 +125,12 @@
 
 		// Focus/Blur events
 		if (!Formstone.isMobile) {
-			data.$dropdown.on(Events.focusIn, data, onFocusIn)
-						  .on(Events.focusOut, data, onFocusOut);
+			data.$dropdown.on(Events.focus, data, onFocus)
+						  .on(Events.blur, data, onBlur);
 
 			// Handle clicks to associated labels
-			this.on(Events.focusIn, data, function(e) {
-				e.data.$dropdown.trigger(Events.raw.focusIn);
+			this.on(Events.focus, data, function(e) {
+				e.data.$dropdown.trigger(Events.raw.focus);
 			});
 		}
 	}
@@ -142,9 +148,11 @@
 		}
 
 		// Scrollbar support
-		if ($.fn.fsScrollbar !== undefined) {
-			data.$wrapper.fsScrollbar("destroy");
+		/*
+		if ($.fn.scroller !== undefined) {
+			data.$dropdown.find(".selecter-options").scroller("destroy");
 		}
+		*/
 
 		data.$el[0].tabIndex = data.tabIndex;
 
@@ -256,8 +264,7 @@
 
 				html += '<span class="' + classes.join(" ") + '">' + $option.attr("label") + '</span>';
 			} else {
-				var opVal   = $option.val(),
-					opLabel = $option.data("label");
+				var opVal = $option.val();
 
 				if (!$option.attr("value")) {
 					$option.attr("value", opVal);
@@ -277,20 +284,14 @@
 
 				html += '<button type="button" class="' + classes.join(" ") + '" ';
 				html += 'data-value="' + opVal + '">';
-
-				if (opLabel) {
-					html += opLabel;
-				} else {
-					html += Functions.decodeEntities( trimText($option.text(), data.trim) );
-				}
-
+				html += $("<span></span>").text( trimText($option.text(), data.trim) ).html();
 				html += '</button>';
 
 				j++;
 			}
 		}
 
-		data.$items = data.$wrapper.html( $.parseHTML(html) )
+		data.$items = data.$wrapper.html(html)
 								   .find(Classes.item);
 	}
 
@@ -327,12 +328,6 @@
 				}
 			}
 		}
-
-		closeOthers(data);
-	}
-
-	function closeOthers(data) {
-		$(Classes.base).not(data.$dropdown).trigger(Events.close, [ data ]);
 	}
 
 	/**
@@ -352,20 +347,20 @@
 	function openOptions(data) {
 		// Make sure it's not already open
 		if (data.closed) {
+			$(Classes.base).not(data.$dropdown).trigger(Events.close, [ data ]);
+
 			var offset = data.$dropdown.offset(),
 				bodyHeight = $Body.outerHeight(),
 				optionsHeight = data.$wrapper.outerHeight(true),
 				selectedOffset = (data.index >= 0) ? data.$items.eq(data.index).position() : { left: 0, top: 0 };
 
 			// Calculate bottom of document
-			if (offset.top + optionsHeight > bodyHeight - data.bottomEdge) {
+			if (offset.top + optionsHeight > bodyHeight) {
 				data.$dropdown.addClass(RawClasses.bottom);
 			}
 
 			// Bind Events
-			$Body.on(Events.click + data.dotGuid, ":not(" + Classes.options + ")", data, closeOptionsHelper);
-
-			data.$dropdown.trigger(Events.focusIn);
+			$Body.on(data.clickGUID, ":not(" + Classes.options + ")", data, closeOptionsHelper);
 
 			data.$dropdown.addClass(RawClasses.open);
 			scrollOptions(data);
@@ -391,7 +386,7 @@
 	function closeOptions(data) {
 		// Make sure it's actually open
 		if (data && !data.closed) {
-			$Body.off(Events.click + data.dotGuid);
+			$Body.off(data.clickGUID);
 
 			data.$dropdown.removeClass( [RawClasses.open, RawClasses.bottom].join(" ") );
 
@@ -413,8 +408,6 @@
 
 		if (data && $(e.currentTarget).parents(Classes.base).length === 0) {
 			closeOptions(data);
-
-			data.$dropdown.trigger(Events.focusOut);
 		}
 	}
 
@@ -430,8 +423,6 @@
 
 		if (data) {
 			closeOptions(data);
-
-			data.$dropdown.trigger(Events.focusOut);
 		}
 	}
 
@@ -463,8 +454,6 @@
 				// Clean up
 				closeOptions(data);
 			}
-
-			data.$dropdown.trigger(Events.focusIn);
 		}
 	}
 
@@ -489,50 +478,40 @@
 
 	/**
 	 * @method private
-	 * @name onFocusIn
-	 * @description Handles instance focusIn.
+	 * @name onFocus
+	 * @description Handles instance focus.
 	 * @param e [object] "Event data"
 	 */
 
-	function onFocusIn(e) {
+	function onFocus(e) {
 		Functions.killEvent(e);
 
-		var $target = $(e.currentTarget),
-			data    = e.data;
+		var data = e.data;
 
-		if (!data.disabled && !data.multiple && !data.focused) {
-			closeOthers(data);
-
-			data.focused = true;
-
+		if (!data.disabled && !data.multiple) {
 			data.$dropdown.addClass(RawClasses.focus)
-						  .on(Events.keyDown + data.dotGuid, data, onKeypress);
+						  .on(data.keyDownGUID, data, onKeypress);
 		}
 	}
 
 	/**
 	 * @method private
-	 * @name onFocusOut
-	 * @description Handles instance focusOut.
+	 * @name onBlur
+	 * @description Handles instance blur.
 	 * @param e [object] "Event data"
 	 */
 
-	function onFocusOut(e, internal) {
+	function onBlur(e, internal) {
 		Functions.killEvent(e);
 
-		var $target = $(e.currentTarget),
-			data    = e.data;
+		var data = e.data;
 
-		if (data.focused && data.closed) {
-			data.focused = false;
+		data.$dropdown.removeClass(RawClasses.focus)
+					  .off(data.keyDownGUID);
 
-			data.$dropdown.removeClass(RawClasses.focus)
-						  .off(Events.keyDown + data.dotGuid);
-
-			if (!data.multiple) {
-				// Clean up
-				closeOptions(data);
-			}
+		if (!data.multiple) {
+			// Clean up
+			closeOptions(data);
 		}
 	}
 
@@ -655,16 +634,17 @@
 	 */
 
 	function scrollOptions(data) {
-		var $selected      = data.$items.eq(data.index),
-			selectedOffset = (data.index >= 0 && !$selected.hasClass(RawClasses.item_placeholder)) ? $selected.position() : { left: 0, top: 0 },
-			buffer         = (data.$wrapper.outerHeight() - $selected.outerHeight()) / 2;
+		var $selected = data.$items.eq(data.index),
+			selectedOffset = (data.index >= 0 && !$selected.hasClass(Classes.item_placeholder)) ? $selected.position() : { left: 0, top: 0 };
 
-		if ($.fn.fsScrollbar !== undefined) {
-			data.$wrapper.fsScrollbar("resize")
-						 .fsScrollbar("scroll", (data.$wrapper.find(".fs-scrollbar-content").scrollTop() + selectedOffset.top) );
+		/*
+		if ($.fn.scroller !== undefined) {
+			data.$wrapper.scroller("scroll", (data.$wrapper.find(".scroller-content").scrollTop() + selectedOffset.top), 0)
+							  .scroller("reset");
 		} else {
-			data.$wrapper.scrollTop( data.$wrapper.scrollTop() + selectedOffset.top - buffer );
-		}
+		*/
+			data.$wrapper.scrollTop( data.$wrapper.scrollTop() + selectedOffset.top );
+		// }
 	}
 
 	/**
@@ -738,11 +718,8 @@
 	 * @name Dropdown
 	 * @description A jQuery plugin for custom select elements.
 	 * @type widget
-	 * @main dropdown.js
-	 * @main dropdown.css
-	 * @dependency jQuery
 	 * @dependency core.js
-	 * @dependency scrollbar.js
+	 * @dependency touch.js
 	 */
 
 	var Plugin = Formstone.Plugin("dropdown", {
@@ -750,7 +727,6 @@
 
 			/**
 			 * @options
-			 * @param bottomEdge [int] <0> "Threshold for bottom position”
 			 * @param cover [boolean] <false> "Cover handle with option set"
 			 * @param customClass [string] <''> "Class applied to instance"
 			 * @param label [string] <''> "Label displayed before selection"
@@ -760,7 +736,6 @@
 			 * @param trim [int] <0> "Trim options to specified length; 0 to disable”
 			 */
 			defaults: {
-				bottomEdge     : 0,
 				cover          : false,
 				customClass    : "",
 				label          : "",
@@ -803,6 +778,7 @@
 			],
 
 			events: {
+				tap:   "tap",
 				close: "close"
 			}
 		}),
@@ -816,6 +792,7 @@
 
 		// Local
 
+		GUID          = 0,
 		Window        = Formstone.window,
 		$Window       = Formstone.$window,
 		Document      = Formstone.document,

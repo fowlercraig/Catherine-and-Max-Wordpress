@@ -1,4 +1,4 @@
-/*! formstone v0.8.26 [lightbox.css] 2015-11-01 | MIT License | formstone.it */
+/*! formstone v0.6.4 [lightbox.css] 2015-06-08 | MIT License | formstone.it */
 
 /**
 	 * @class
@@ -53,18 +53,6 @@
 	 * @name .fs-lightbox.fs-lightbox-iframed
 	 * @type modifier
 	 * @description Indicates iFrame content
-	 */
-/**
-	 * @class
-	 * @name .fs-lightbox.fs-lightbox-has_caption
-	 * @type modifier
-	 * @description Indicates caption is present
-	 */
-/**
-	 * @class
-	 * @name .fs-lightbox.fs-lightbox-has_controls
-	 * @type modifier
-	 * @description Indicates controls are present
 	 */
 .fs-lightbox {
   width: 200px;
@@ -208,7 +196,7 @@
 		 */
 }
 .fs-lightbox,
-.fs-lightbox *:not(input):not(textarea) {
+.fs-lightbox * {
   box-sizing: border-box;
   -webkit-user-select: none !important;
      -moz-user-select: none !important;
@@ -229,17 +217,8 @@
           transition: height 0.25s ease, width 0.25s ease, opacity 0.25s linear, top 0.25s ease;
 }
 .fs-lightbox-animating .fs-lightbox-container {
-  -webkit-transition: opacity 0.25s linear 0.25s, visibility 0.25s linear 0.25s;
-          transition: opacity 0.25s linear 0.25s, visibility 0.25s linear 0.25s;
-}
-.fs-lightbox-mobile .fs-lightbox-image_container {
-  -webkit-transform: translate3D(0, 0, 0);
-      -ms-transform: translate3D(0, 0, 0);
-          transform: translate3D(0, 0, 0);
-}
-.fs-lightbox-mobile.fs-lightbox-animating .fs-lightbox-image_container {
-  -webkit-transition: height 0.25s ease, width 0.25s ease, top 0.25s ease, left 0.25s ease;
-          transition: height 0.25s ease, width 0.25s ease, top 0.25s ease, left 0.25s ease;
+  -webkit-transition: opacity 0.25s linear 0.25s;
+          transition: opacity 0.25s linear 0.25s;
 }
 .fs-lightbox-overlay {
   width: 100%;
@@ -315,9 +294,8 @@
   display: block;
   margin: auto;
   opacity: 0;
-  -webkit-transition: opacity 0.25s linear, visibility 0.25s linear;
-          transition: opacity 0.25s linear, visibility 0.25s linear;
-  visibility: hidden;
+  -webkit-transition: opacity 0.25s linear;
+          transition: opacity 0.25s linear;
 }
 .fs-lightbox-loading_icon:before,
 .fs-lightbox-loading_icon:after {
@@ -380,7 +358,6 @@
   opacity: 1;
   overflow: hidden;
   padding: 0;
-  visibility: visible;
 }
 .fs-lightbox-content:after {
   clear: both;
@@ -396,18 +373,8 @@
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
-.fs-lightbox-mobile .fs-lightbox-image_container {
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  position: absolute;
-}
 .fs-lightbox-image {
   float: left;
-}
-.fs-lightbox-mobile .fs-lightbox-image {
-  position: relative;
-  float: none;
 }
 .fs-lightbox-video {
   width: 100%;
@@ -441,10 +408,9 @@
   opacity: 1;
   overflow: hidden;
   text-indent: 200%;
-  -webkit-transition: opacity 0.15s linear, visibility 0.15s linear;
-          transition: opacity 0.15s linear, visibility 0.15s linear;
+  -webkit-transition: opacity 0.15s linear;
+          transition: opacity 0.15s linear;
   white-space: nowrap;
-  visibility: visible;
 }
 .fs-lightbox-control:focus {
   outline: none;
@@ -483,21 +449,17 @@
 }
 .fs-lightbox-control_disabled {
   opacity: 0;
-  visibility: hidden;
 }
 .no-touch .fs-lightbox .fs-lightbox-control {
   opacity: 0;
-  visibility: hidden;
 }
 .no-touch .fs-lightbox:hover .fs-lightbox-control {
   opacity: 1;
-  visibility: visible;
 }
 .no-touch .fs-lightbox .fs-lightbox-control_disabled,
 .no-touch .fs-lightbox:hover .fs-lightbox-control_disabled {
   opacity: 0;
   cursor: default;
-  visibility: hidden;
 }
 .fs-lightbox-position {
   color: #999999;
@@ -534,11 +496,9 @@
   opacity: 0;
   -webkit-transition: opacity 0.25s linear;
           transition: opacity 0.25s linear;
-  visibility: hidden;
 }
 .fs-lightbox-loading .fs-lightbox-loading_icon {
   opacity: 1;
-  visibility: visible;
 }
 .fs-lightbox-mobile {
   width: 100%;
@@ -596,7 +556,6 @@
   border-radius: 0;
   box-shadow: none;
   opacity: 1;
-  visibility: visible;
 }
 .fs-lightbox-mobile .fs-lightbox-control_previous {
   left: 0;
@@ -615,14 +574,12 @@
 .no-touch .fs-lightbox-mobile .fs-lightbox-control,
 .no-touch .fs-lightbox-mobile:hover .fs-lightbox-control {
   opacity: 1;
-  visibility: visible;
 }
 .fs-lightbox-mobile .fs-lightbox-control_disabled,
 .no-touch .fs-lightbox-mobile .fs-lightbox-control_disabled,
 .no-touch .fs-lightbox-mobile:hover .fs-lightbox-control_disabled {
   opacity: 0;
   cursor: default !important;
-  visibility: hidden;
 }
 .fs-lightbox-mobile .fs-lightbox-meta {
   padding: 15px 65px;
@@ -652,7 +609,6 @@
 }
 .fs-lightbox-mobile.fs-lightbox-inline .fs-lightbox-content,
 .fs-lightbox-mobile.fs-lightbox-iframe .fs-lightbox-content {
-  height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
