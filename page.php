@@ -53,8 +53,8 @@
 			<div class="register-wrapper">
 			<div class="register fs-row">
 				<?php while ( have_rows('registry') ) : the_row(); ?>
-				<div class="register-item fs-cell fs-xl-3 fs-lg-half fs-md-half fs-sm-3 fs-padded">
-					<a href="<?php the_sub_field('name'); ?>" target="blank"><img src="/assets/<?php the_sub_field('image'); ?>.svg"  class="" /><?php the_sub_field('name'); ?></a>
+				<div class="register-item fs-cell fs-xl-4 fs-lg-4 fs-md-2 fs-sm-3 fs-padded">
+					<a href="<?php the_sub_field('url'); ?>" target="blank"><img src="/assets/<?php the_sub_field('image'); ?>.svg"  class="" /><?php the_sub_field('name'); ?></a>
 				</div>
 				<?php endwhile; ?>
 			</div>
