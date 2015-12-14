@@ -3135,9 +3135,6 @@ hr.divider-vertical {
   height: 75px;
   margin: 25px auto;
 }
-hr.divider-vertical.short {
-  height: 37.5px;
-}
 hr.divider-vertical.down:after {
   top: 100%;
   left: 50%;
@@ -3645,7 +3642,7 @@ form input[type=search]-last {
 }
 @media screen and (min-width: 980px) {
   .banner {
-    height: 400px;
+    height: 350px;
   }
 }
 @media screen and (min-width: 1220px) {
@@ -4314,7 +4311,7 @@ small a {
 .page-header {
   margin-bottom: 50px;
   position: relative;
-  padding-top: 150px;
+  padding-top: 200px;
 }
 .page-header_image {
   height: 80px;
@@ -4357,7 +4354,7 @@ small a {
 .page-content h4,
 .page-content h5,
 .page-content h6 {
-  color: #825042;
+  color: #1452A2;
 }
 .page-content-green h1,
 .page-content-green h2,
@@ -4375,19 +4372,8 @@ small a {
   font-size: 0.8125rem;
 }
 .page-content_schedule .page-header {
-  margin: 0;
-  padding: 0;
-}
-.page-content_schedule .page-title {
-  font-size: 20px;
-  font-size: 1.25rem;
-  margin-bottom: 15px;
-  color: #825042;
-  border-bottom: 1px solid rgba(130, 80, 66, 0.2);
-  display: inline-block;
-}
-.page-content_schedule p {
   margin-bottom: 0;
+  background: pink;
 }
 #index--splash {
   background: #1B1B1C;

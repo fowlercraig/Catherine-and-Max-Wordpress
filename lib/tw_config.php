@@ -34,3 +34,9 @@ function my_jquery_enqueue() {
   wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js", array(), '1.0.0', false);
   wp_enqueue_script('jquery');
 }
+
+if (!is_admin()) add_action("wp_enqueue_scripts", "google_maps", 8);
+function google_maps() {
+  wp_register_script('gmap', "http://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.7", array(), '3.7', false);
+  wp_enqueue_script('gmap');
+}

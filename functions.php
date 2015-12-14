@@ -15,7 +15,7 @@ include_once ('lib/opengraph/opengraph.php' );
 include_once ('lib/gravitylimits.php' );
 
 // HTML Compression
-include_once ('lib/wp-html-compression/wp-html-compression.php' );
+//include_once ('lib/wp-html-compression/wp-html-compression.php' );
 
 // Includes
 
@@ -41,7 +41,7 @@ add_theme_support('soil-disable-asset-versioning');
 add_theme_support('soil-nav-walker');
 //add_theme_support('soil-jquery-cdn');
 //add_theme_support('soil-js-to-footer');
-add_filter('show_admin_bar', '__return_false');
+//add_filter('show_admin_bar', '__return_false');
 
 // Remove Stupid Emojis
 

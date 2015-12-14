@@ -1,7 +1,7 @@
 .page-content {
 
 	h1,h2,h3,h4,h5,h6 {
-		color: @blue;
+		color: @red;
 	}
 
 	&-green {
@@ -17,6 +17,25 @@
 		background: @bgGray;
 		padding: @spaced;
 		.font_size(13);
+	}
+
+	&_schedule {
+		.page {
+			&-header {
+				margin: 0;
+				padding: 0;
+			}
+			&-title {
+				.font_size(20);
+				margin-bottom: 15px;
+				color: @red;
+				border-bottom: 1px solid fade(@red, 20%);
+				display: inline-block;
+			}
+		}
+		p {
+			margin-bottom: 0;
+		}
 	}
 
 }

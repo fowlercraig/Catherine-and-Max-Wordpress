@@ -12,3 +12,4 @@
 // @codekit-prepend "../bower_components/components-modernizr/modernizr.js"
 // @codekit-prepend "../bower_components/headhesive.js/dist/headhesive.js"
 // @codekit-prepend "../bower_components/jquery.transit/jquery.transit.js"
+// @codekit-prepend "../bower_components/maplace-js/src/maplace-0.1.3.min.js"
