@@ -20,6 +20,7 @@
 <script src="/assets/js/app.ie.min.js"></script>
 <![endif]-->
 
+<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js"></script>
 <?php include_once locate_template('lib/config.fonts.php' ); ?>
 <?php include_once locate_template('lib/config.menus.php' ); ?>
 
