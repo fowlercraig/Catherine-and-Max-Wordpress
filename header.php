@@ -24,6 +24,12 @@
 <?php include_once locate_template('lib/config.fonts.php' ); ?>
 <?php include_once locate_template('lib/config.menus.php' ); ?>
 
+<script type="text/javascript">
+	addeventatc.settings({
+		css        : false
+	});
+</script>
+
 </head>
 
 <body class="fs-grid page-index">
