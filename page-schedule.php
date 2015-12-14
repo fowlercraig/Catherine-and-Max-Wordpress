@@ -14,6 +14,8 @@
 		    'post_type'      => 'page',
 		    'paged'          => $paged,
 		    'post_parent'    => $post->ID,
+		    'orderby'				 => 'menu_order',
+		    'order'					 => 'ASC'
 		  );
 		  $temp = $wp_query;
 		  $wp_query = null;
