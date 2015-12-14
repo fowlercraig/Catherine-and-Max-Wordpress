@@ -3268,13 +3268,13 @@ form input[type=search]-nav {
 @media screen and (min-width: 300px) {
   form input[type=submit]-nav,
   form input[type=search]-nav {
-    padding: 0 12.5px;
+    padding: 0 8.33333333px;
   }
 }
 @media screen and (min-width: 740px) {
   form input[type=submit]-nav,
   form input[type=search]-nav {
-    padding: 0 25px;
+    padding: 0 12.5px;
   }
 }
 form input[type=submit]-nav[class*="ss-"],
@@ -3488,12 +3488,12 @@ form input[type=search]-last {
 }
 @media screen and (min-width: 300px) {
   .btn-nav {
-    padding: 0 12.5px;
+    padding: 0 8.33333333px;
   }
 }
 @media screen and (min-width: 740px) {
   .btn-nav {
-    padding: 0 25px;
+    padding: 0 12.5px;
   }
 }
 .btn-nav[class*="ss-"] {
