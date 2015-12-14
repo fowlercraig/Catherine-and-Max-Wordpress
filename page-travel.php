@@ -23,7 +23,7 @@
 		<h5><?php the_sub_field('name'); ?></h5>
 		<h6><?php echo $address['address']; ?></h6>
 	</header>
-	<a href="<?php the_sub_field('url'); ?>" target="blank">Visit their site</a>
+	<a href="<?php the_sub_field('website'); ?>" target="blank">Visit their site</a>
 </div>
 
 <?php endwhile; ?>
@@ -46,7 +46,7 @@
 		        lat: <?php echo $address['lat']; ?>,
 		        lon: <?php echo $address['lng']; ?>,
 		        title: "<?php the_sub_field('name'); ?>",
-		        html: "<h5><?php the_sub_field('name'); ?></h5>",
+		        html: "<h4><?php the_sub_field('name'); ?></h4>",
 		        icon: 'http://maps.google.com/mapfiles/markerA.png',
 		    },
 		    <?php endwhile; ?>

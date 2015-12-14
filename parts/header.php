@@ -14,7 +14,7 @@
                <a href="#" class="btn btn-nav btn-hamburg btn-menu swap <?php if (is_front_page()): echo 'white'; endif; ?>" data-swap-linked=".btn-menu" data-swap-target=".menu-swap">&nbsp;</a>
             </nav>
             <nav id="header--nav_center" class="fs-cell fs-lg-8 fs-md-4 fs-sm-hide text-center">
-               <a href="#" class="btn btn-nav"><?php the_field('top_date', 2); ?></a>
+               <a href="/" class="btn btn-nav"><?php the_field('top_date', 2); ?></a>
             </nav>
             <nav id="header--nav_right" class="fs-cell fs-lg-2 fs-md-hide fs-sm-2 text-right">
                <a href="#" class="btn btn-nav white btn-last"><?php the_field('hashtag', 2); ?></a>

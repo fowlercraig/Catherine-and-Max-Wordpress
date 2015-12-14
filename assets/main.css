@@ -3878,6 +3878,14 @@ form input[type=search]-last {
   margin: auto;
   margin-bottom: 25px;
 }
+#map.banner h1,
+#map.banner h2,
+#map.banner h3,
+#map.banner h4,
+#map.banner h5,
+#map.banner h6 {
+  color: #825042 !important;
+}
 #mc form {
   border-bottom: 1px solid #E6E7E8;
 }
