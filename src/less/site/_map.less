@@ -1,0 +1,59 @@
+.map {
+	&-poi {
+		h6 {
+			color: @black50;
+		}
+	}
+	&-map {
+		p {
+			color: @textGray;
+			.headerFont();
+			.font_size(12);
+			margin-bottom: 0;
+			font-weight: 300;
+		}
+	}
+	&-content {
+		overflow: scroll;
+		.controls {
+			li {
+				padding: 0;
+				.headerFont();
+				font-weight: 300;
+				color: @white75;
+				.font_size(15);
+				margin: 0;
+				border-top: 1px solid @black25;
+				&:first-child {
+					border: none;
+				}
+				a {
+					color: inherit!important;
+					padding: 10px 0 12px!important;
+					span {
+						span {
+							color: @black50;
+							text-transform: uppercase;
+							letter-spacing: .5px;
+							.font_size(11);
+							line-height: 1;
+						}
+					}
+				}
+				&:hover {
+					color: @white;
+				}
+				&.active {
+					color: @white;
+				}
+				&:before {
+					display: none;
+				}
+			}
+		}
+	}
+	&-divider {
+		margin: 10px 0;
+		background: @black25;
+	}
+}
