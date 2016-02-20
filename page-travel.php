@@ -14,19 +14,20 @@
 <div class="fs-cell fs-lg-10 fs-md-6 fs-sm-3 fs-centered">
 <div class="fs-row">
 <?php 
-	while ( have_rows('hotels') ) : the_row(); 
+	$x = 'a'; while ( have_rows('hotels') ) : the_row(); 
 	$address = get_sub_field('address');
 ?>
 
 <div class="fs-cell fs-lg-half fs-md-half fs-sm-3 text-center">
 	<header>
-		<h5><?php the_sub_field('name'); ?></h5>
+		<h5><?php the_sub_field('name'); ?> (<?php echo $x; ?>)</h5>
 		<h6><?php echo $address['address']; ?></h6>
 	</header>
 	<a href="<?php the_sub_field('website'); ?>" target="blank">Visit their site</a>
+	<hr class="invisible compact">
 </div>
 
-<?php endwhile; ?>
+<?php $x++; endwhile; ?>
 
 </div>
 </div>
@@ -40,16 +41,16 @@
 	$(document).ready(function(){
 		var LocsA = [
 			<?php $number = count(get_field('hotels')); $count = 0 ;?>
-			<?php while ( have_rows('hotels') ) : the_row(); $address = get_sub_field('address'); ?>
+			<?php $x = 'A'; while ( have_rows('hotels') ) : the_row(); $address = get_sub_field('address'); ?>
 
 			{
 		        lat: <?php echo $address['lat']; ?>,
 		        lon: <?php echo $address['lng']; ?>,
 		        title: "<?php the_sub_field('name'); ?>",
 		        html: "<h4><?php the_sub_field('name'); ?></h4>",
-		        icon: 'http://maps.google.com/mapfiles/markerA.png',
+		        icon: 'http://maps.google.com/mapfiles/marker<?php echo $x; ?>.png',
 		    },
-		    <?php endwhile; ?>
+		    <?php $x++; endwhile; ?>
 		    
 		    {
 		        lat: 29.964969,
